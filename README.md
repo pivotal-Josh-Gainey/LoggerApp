@@ -1,8 +1,6 @@
 # LoggerApp
 Simple app to initiate log messages<br>
-Usage:<br>
-This app can be used to log custom messages.<br><br>
-
+Usage:
 The endpoint is /log<br><br>
 Custom attributes that can be passed in:<br>
 type = The type of log message to do (info, warning, error --- default is info)<br>
