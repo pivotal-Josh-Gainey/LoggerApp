@@ -1,5 +1,5 @@
 # LoggerApp
-Simple app to initiate log messages
+Simple app to initiate log messages<br>
 Usage:<br>
 This app can be used to log custom messages.<br><br>
 
@@ -11,8 +11,8 @@ message = The message to log appended by the iteration number (default is "logge
 Example endpoints:<br>
  ```java 
 /log<br>
-/log?count=10000000<br>
-/log?count=1400&message=hello+warning+world&type=warning<br>
-/log?count=1000&type=error<br>
+/log?count=10000000
+/log?count=1400&message=hello+warning+world&type=warning
+/log?count=1000&type=error
 ```  
     
