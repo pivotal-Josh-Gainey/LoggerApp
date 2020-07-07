@@ -8,10 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Random;
+
 @Controller
 public class LogController {
 
-
+    boolean blast = false;
+    Random random = new Random();
 
     @RequestMapping(method = RequestMethod.GET, value = "/log", produces = "application/json")
     public ResponseEntity<String> log(@RequestParam(value = "count", defaultValue = "100") int count,
@@ -45,5 +48,80 @@ public class LogController {
 
         return new ResponseEntity<>("Successfully logged " + "messages", HttpStatus.OK);
     }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/log2", produces = "application/json")
+    public ResponseEntity<String> log2(@RequestParam(value = "count", defaultValue = "100") int count,
+                                      @RequestParam(value = "type", defaultValue = "info") String typeIn,
+                                      @RequestParam(value = "message",
+                                              defaultValue = "logger_app_message iteration number: ") String messageIn){
+
+        //the type of log to do
+        Utils.LOGTYPE type;
+
+
+        switch (typeIn){
+            case "info":
+                type = Utils.LOGTYPE.INFO;
+                break;
+            case "warning":
+                type = Utils.LOGTYPE.WARNING;
+                break;
+            case "error":
+                type = Utils.LOGTYPE.ERROR;
+                break;
+            default:
+                return new ResponseEntity<>("Expected the type" +
+                        "of log to be info,warning, or error but got " + typeIn, HttpStatus.OK);
+        }
+
+        for (int i = 0; i< count; i++){
+            Utils.log(type, messageIn + i);
+
+        }
+
+        return new ResponseEntity<>("Successfully logged " + "messages", HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/blaston", produces = "application/json")
+    public void blaston(@RequestParam(value = "sleeptime", defaultValue = "50") int sleeptime,
+                        @RequestParam(value = "longstring", defaultValue = "false") boolean longtext){
+        blast = true;
+        while(blast){
+            try {
+                Thread.sleep(sleeptime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if(longtext){
+                Utils.log(Utils.LOGTYPE.INFO,LongString.text);
+            }else{
+                Utils.log(Utils.LOGTYPE.INFO,"LOGLY LOGS");
+            }
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/blastoff", produces = "application/json")
+    public ResponseEntity<String> blastoff(){
+        blast = false;
+        return new ResponseEntity<>("Stopped", HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/healthcheck", produces = "application/json")
+    public ResponseEntity<String> health(){
+        return new ResponseEntity<>("ok", HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/healthcheck-randomfail", produces = "application/json")
+    public ResponseEntity<String> healthfail(){
+
+        int num = random.nextInt(5);
+
+        if(num == 3){
+            return new ResponseEntity<>("400", HttpStatus.NOT_FOUND);
+        }else{
+            return new ResponseEntity<>("ok", HttpStatus.OK);
+        }
+    }
+
 
 }

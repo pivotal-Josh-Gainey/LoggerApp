@@ -1,25 +1,25 @@
 package com.jgainey.logger_app;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class Utils {
 
     public static Logger LOGGER;
 
+    enum LOGTYPE {INFO, WARNING, ERROR}
 
+    public static void initLogger() {
+        LOGGER = LoggerFactory.getLogger(Utils.class);
 
-    enum LOGTYPE{INFO,WARNING,ERROR}
-
-    public static void initLogger(){
-        LOGGER = Logger.getLogger("logger_app");
+        logInfo("Throttle-Nozzle Logger Ready");
     }
 
     public static void log(LOGTYPE type, String message) {
-        switch (type){
+        switch (type) {
+
             case INFO:
                 logInfo(message);
                 break;
@@ -34,17 +34,16 @@ public class Utils {
         }
     }
 
-    public static void logInfo(String message){
-        LOGGER.log(Level.INFO, message);
+    public static void logInfo(String message) {
+        LOGGER.info(message);
     }
 
-    public static void logWarning(String message){
-        LOGGER.log(Level.WARNING, message);
+    public static void logWarning(String message) {
+        LOGGER.warn(message);
     }
 
-    public static void logError(String message){
-        LOGGER.log(Level.SEVERE, message);
+    public static void logError(String message) {
+        LOGGER.error(message);
     }
-
 
 }
