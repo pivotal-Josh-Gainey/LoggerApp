@@ -1,5 +1,5 @@
 applications:
-- name: logger_app
+- name: logger-app
   memory: 1G
   instances: 1
   buildpack: java_buildpack_offline
