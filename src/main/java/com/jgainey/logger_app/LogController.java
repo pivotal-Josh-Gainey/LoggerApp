@@ -3,17 +3,20 @@ package com.jgainey.logger_app;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 
 @Controller
 public class LogController {
 
-    boolean blast = false;
+    AtomicBoolean blast = new AtomicBoolean(false);
     Random random = new Random();
 
     @RequestMapping(method = RequestMethod.GET, value = "/log", produces = "application/json")
@@ -83,26 +86,34 @@ public class LogController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/blaston", produces = "application/json")
-    public void blaston(@RequestParam(value = "sleeptime", defaultValue = "50") int sleeptime,
-                        @RequestParam(value = "longstring", defaultValue = "false") boolean longtext){
-        blast = true;
-        while(blast){
-            try {
-                Thread.sleep(sleeptime);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if(longtext){
-                Utils.log(Utils.LOGTYPE.INFO,LongString.text);
-            }else{
-                Utils.log(Utils.LOGTYPE.INFO,"LOGLY LOGS");
-            }
-        }
+    public ResponseEntity<String> blaston(@RequestParam(value = "sleeptime", defaultValue = "50") int sleeptime,
+                                          @RequestParam(value = "longstring", defaultValue = "false") boolean longtext){
+        blastonAsync(sleeptime, longtext);
+        return new ResponseEntity<>("Started", HttpStatus.OK);
     }
+
+    public void blastonAsync(int sleeptime, boolean longtext) {
+        new Thread(() -> {
+            System.out.println("=== Testing " + Thread.currentThread().getName() + " ===");
+            blast.set(true);
+            while(blast.get()){
+                try {
+                    Thread.sleep(sleeptime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if(longtext){
+                    Utils.log(Utils.LOGTYPE.INFO,LongString.text);
+                }else{
+                    Utils.log(Utils.LOGTYPE.INFO,"LOGLY LOGS");
+                }
+             }
+        }).start();
+     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/blastoff", produces = "application/json")
     public ResponseEntity<String> blastoff(){
-        blast = false;
+        blast.set(false);
         return new ResponseEntity<>("Stopped", HttpStatus.OK);
     }
 
