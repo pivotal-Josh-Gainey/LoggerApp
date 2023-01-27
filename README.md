@@ -22,3 +22,7 @@ This endpoint can accept sleeptime param to indicate how many milliseconds to sl
  ```java 
 /blaston?sleeptime=200
 ```
+Once blaston has been called - to stop it:
+ ```java 
+/blastoff
+```
