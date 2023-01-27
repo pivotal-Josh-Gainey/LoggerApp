@@ -14,3 +14,11 @@ Example endpoints:<br>
 /log?count=1000&type=error
 ```  
     
+There is also an endpoint that will allow to consistently log:
+ ```java 
+/blaston
+```
+This endpoint can accept sleeptime param to indicate how many milliseconds to sleep between each log:
+ ```java 
+/blaston?sleeptime=200
+```
